@@ -3,6 +3,7 @@ import Card from '../UI/Card';
 import './ExpenseItem.css';
 
 function ExpenseItem(props) {// React components get all input props via props object
+    const clickHandler = () => console.log('clicked!');
     
     return (
         <Card className="expense-item">
@@ -11,6 +12,7 @@ function ExpenseItem(props) {// React components get all input props via props o
                 <h2>{props.title}</h2>
                 <div className="expense-item__price">{props.amount}</div>
             </div>
+            <button onClick={clickHandler}>Change title</button>
         </Card>
     );
 }
