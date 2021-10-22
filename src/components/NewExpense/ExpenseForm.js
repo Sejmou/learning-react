@@ -3,23 +3,33 @@ import { useState } from 'react';
 import './ExpenseForm.css';
 
 function ExpenseForm(props) {
-    //only storing value for now, will use it later
-    const [enteredTitle, setEnteredTitle] = useState('');
-    const [enteredAmount, setEnteredAmount] = useState('');
-    const [enteredDate, setEnteredDate] = useState('');
+    // one could update state using a single object, too
+    const [userInput, setUserInput] = useState({
+        enteredTitle: '',
+        enteredAmount: '',
+        enteredDate: ''
+    });
 
-    //we get access to an event object, just like if we added this fn via .addEventListener()
     const titleChangeHandler = (event) => {
-        //update the state for the entered title
-        setEnteredTitle(event.target.value);
+        // this state update approach discouraged, for reasons that will be explained later!
+        setUserInput(({
+            ...userInput,
+            enteredTitle: event.target.value
+        }));
     };
 
     const amountChangeHandler = (event) => {
-        setEnteredAmount(event.target.value);
+        setUserInput(({
+            ...userInput,
+            enteredAmount: event.target.value
+        }));
     };
 
     const dateChangeHandler = (event) => {
-        setEnteredDate(event.target.value);
+        setUserInput(({
+            ...userInput,
+            enteredDate: event.target.value
+        }));
     }
 
     return (
