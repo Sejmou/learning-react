@@ -3,41 +3,39 @@ import { useState } from 'react';
 import './ExpenseForm.css';
 
 function ExpenseForm(props) {
-    // one could update state using a single object, too
-    const [userInput, setUserInput] = useState({
-        enteredTitle: '',
-        enteredAmount: '',
-        enteredDate: ''
-    });
+    // For now, we return to a "single value state slice udpate strategy"
+    const [enteredTitle, setEnteredTitle] = useState('');
+    const [enteredAmount, setEnteredAmount] = useState('');
+    const [enteredDate, setEnteredDate] = useState('');
 
     const titleChangeHandler = (event) => {
-        // instead of providing new state object relying on userInput directly, we pass a function
-        // it returns new state based on the previous state
-        // reason for doing this: state in React doesn't update immediately, updates are scheduled
-        // it might be that the state snapshot userInput is already out of date when this particular state update is completed
-        // therefore we could lose previous state changes (not concerning enteredTitle)
-        setUserInput((prevState) => ({
-            ...prevState,
-            enteredTitle: event.target.value
-        }));
+        setEnteredTitle(event.target.value);
     };
 
     const amountChangeHandler = (event) => {
-        setUserInput((prevState) => ({
-            ...prevState,
-            enteredAmount: event.target.value
-        }));
+        setEnteredAmount(event.target.value);
     };
 
     const dateChangeHandler = (event) => {
-        setUserInput((prevState) => ({
-            ...prevState,
-            enteredDate: event.target.value
-        }));
+        setEnteredDate(event.target.value);
+    }
+
+    const submitHandler= (event) => {
+        // default submit behavior: page refresh, sending form data to server hosting website
+        // We don't want that!
+        event.preventDefault();
+
+        const expenseData = {
+            title: enteredTitle,
+            amount: +enteredAmount,
+            date: new Date(enteredDate)
+        }
+
+        console.log(expenseData);
     }
 
     return (
-        <form>
+        <form onSubmit={submitHandler}>
             <div className="new-expense__controls">
                 <div className="new-expense__control">
                     <label htmlFor="">Title</label>
