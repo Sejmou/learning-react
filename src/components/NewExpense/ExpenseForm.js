@@ -11,23 +11,27 @@ function ExpenseForm(props) {
     });
 
     const titleChangeHandler = (event) => {
-        // this state update approach discouraged, for reasons that will be explained later!
-        setUserInput(({
-            ...userInput,
+        // instead of providing new state object relying on userInput directly, we pass a function
+        // it returns new state based on the previous state
+        // reason for doing this: state in React doesn't update immediately, updates are scheduled
+        // it might be that the state snapshot userInput is already out of date when this particular state update is completed
+        // therefore we could lose previous state changes (not concerning enteredTitle)
+        setUserInput((prevState) => ({
+            ...prevState,
             enteredTitle: event.target.value
         }));
     };
 
     const amountChangeHandler = (event) => {
-        setUserInput(({
-            ...userInput,
+        setUserInput((prevState) => ({
+            ...prevState,
             enteredAmount: event.target.value
         }));
     };
 
     const dateChangeHandler = (event) => {
-        setUserInput(({
-            ...userInput,
+        setUserInput((prevState) => ({
+            ...prevState,
             enteredDate: event.target.value
         }));
     }
