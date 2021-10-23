@@ -31,7 +31,9 @@ function ExpenseForm(props) {
             date: new Date(enteredDate)
         }
 
-        console.log(expenseData);
+        // call event handler that can be passed to onSaveExpenseData attribute of the ExpenseForm "React DOM Element"
+        // pass it the expenseData
+        props.onSaveExpenseData(expenseData);
 
         // reset form values - will be updated via value binding!
         // onChange + value together give us two-way binding!
