@@ -1,5 +1,6 @@
 import ExpensesFilter from './ExpensesFilter';
 import ExpensesList from './ExpensesList';
+import ExpensesChart from './ExpensesChart';
 import Card from '../UI/Card';
 import './Expenses.css';
 
@@ -11,7 +12,7 @@ function Expenses(props) {
   const filterSelectionChangeHandler = (newSelection) =>
     setFilteredYear(newSelection);
 
-  const filteredItems = props.items.filter(
+  const filteredExpenses = props.items.filter(
     (expense) => expense.date.getFullYear() === +filteredYear
   );
 
@@ -21,7 +22,8 @@ function Expenses(props) {
         selection={filteredYear}
         onSelectionChange={filterSelectionChangeHandler}
       />
-      <ExpensesList items={filteredItems} />
+      <ExpensesChart expenses={filteredExpenses} />
+      <ExpensesList items={filteredExpenses} />
     </Card>
   );
 }
