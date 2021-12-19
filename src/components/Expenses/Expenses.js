@@ -8,10 +8,7 @@ import { useState } from 'react';
 function Expenses(props) {
     const [filteredYear, setFilteredYear] = useState('2021');
     
-    const filterSelectionChangeHandler = (newSelection) => {
-        console.log(newSelection);
-        setFilteredYear(newSelection);
-    }
+    const filterSelectionChangeHandler = (newSelection) => setFilteredYear(newSelection);
 
     const filteredItems = props.items.filter(expense => expense.date.getFullYear() === +filteredYear);
 

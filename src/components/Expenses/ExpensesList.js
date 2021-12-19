@@ -7,9 +7,9 @@ function ExpensesList(props) {
     return (
         <ul className="expenses-list">
             {props.items.map(expense => (
-            <li>
+            <li key={expense.id}// note: "key" attribute has to always be set on "top-most" tag: https://stackoverflow.com/a/41365974/13727176
+            >
                 <ExpenseItem
-                    key={expense.id}// important so list rendering is more efficient and will work correctly http://localhost:3000/
                     title={expense.title}
                     amount={expense.amount}
                     date={expense.date}/>
