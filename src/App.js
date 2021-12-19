@@ -1,6 +1,6 @@
-import { useState } from "react";
-import Expenses from "./components/Expenses/Expenses";
-import NewExpense from "./components/NewExpense/NewExpense";
+import { useState } from 'react';
+import Expenses from './components/Expenses/Expenses';
+import NewExpense from './components/NewExpense/NewExpense';
 
 const DUMMY_EXPENSES = [
   {
@@ -31,8 +31,8 @@ function App() {
     console.log('received new expense in App component!');
     console.log(expenseData);
     console.log('update expenses!');
-    setExpenses(prevExpenses => [expenseData, ...prevExpenses]);
-  }
+    setExpenses((prevExpenses) => [expenseData, ...prevExpenses]);
+  };
 
   return (
     <div>

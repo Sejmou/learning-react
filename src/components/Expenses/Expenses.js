@@ -6,18 +6,24 @@ import './Expenses.css';
 import { useState } from 'react';
 
 function Expenses(props) {
-    const [filteredYear, setFilteredYear] = useState('2021');
-    
-    const filterSelectionChangeHandler = (newSelection) => setFilteredYear(newSelection);
+  const [filteredYear, setFilteredYear] = useState('2021');
 
-    const filteredItems = props.items.filter(expense => expense.date.getFullYear() === +filteredYear);
+  const filterSelectionChangeHandler = (newSelection) =>
+    setFilteredYear(newSelection);
 
-    return(
-        <Card className="expenses">
-            <ExpensesFilter selection={filteredYear} onSelectionChange={filterSelectionChangeHandler} />
-            <ExpensesList items={filteredItems} />
-        </Card>
-    )
+  const filteredItems = props.items.filter(
+    (expense) => expense.date.getFullYear() === +filteredYear
+  );
+
+  return (
+    <Card className='expenses'>
+      <ExpensesFilter
+        selection={filteredYear}
+        onSelectionChange={filterSelectionChangeHandler}
+      />
+      <ExpensesList items={filteredItems} />
+    </Card>
+  );
 }
 
 export default Expenses;
