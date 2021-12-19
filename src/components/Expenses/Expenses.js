@@ -13,7 +13,7 @@ function Expenses(props) {
         setFilteredYear(newSelection);
     }
 
-    const filteredItems = props.items.filter(expense => expense.date.getFullYear() == filteredYear);
+    const filteredItems = props.items.filter(expense => expense.date.getFullYear() === filteredYear);
 
     return(
         <Card className="expenses">
