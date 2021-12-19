@@ -3,7 +3,7 @@ import ExpenseForm from './ExpenseForm';
 import { useState } from 'react';
 
 function NewExpense(props) {
-  const [showForm, setShowForm] = useState(false);
+  const [isEditing, setIsEditing] = useState(false);
 
   const saveExpenseDataHandler = (enteredExpenseData) => {
     const expenseData = {
@@ -11,26 +11,24 @@ function NewExpense(props) {
       id: Math.random().toString(), // not perfect way to create random ID, but good enough for us
     };
 
-    setShowForm(() => false);
+    setIsEditing(() => false);
 
     //pass expenseData on to parent component
     props.onAddExpense(expenseData);
   };
 
-  const startAddExpenseBtnClickHandler = () => setShowForm(() => true);
-  const formCancelClickHandler = () => setShowForm(() => false);
+  const startEditingHandler = () => setIsEditing(() => true);
+  const stopEditingHandler = () => setIsEditing(() => false);
 
   return (
     <div className='new-expense'>
-      {showForm ? (
+      {isEditing ? (
         <ExpenseForm
           onSaveExpenseData={saveExpenseDataHandler}
-          onCancelClicked={formCancelClickHandler}
+          onCancel={stopEditingHandler}
         />
       ) : (
-        <button onClick={startAddExpenseBtnClickHandler}>
-          Add new expense
-        </button>
+        <button onClick={startEditingHandler}>Add new expense</button>
       )}
     </div>
   );
