@@ -25,7 +25,7 @@ const AddUser = props => {
 
     if (enteredAge < 1) return;
 
-    console.log(enteredUsername, enteredAge);
+    props.onAddUser({ name: enteredUsername, age: enteredAge }); // pass on user data to parent
     setEnteredUsername('');
     setEnteredAge('');
   };
