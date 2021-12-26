@@ -12,15 +12,27 @@ const Login = props => {
   const [passwordIsValid, setPasswordIsValid] = useState();
   const [formIsValid, setFormIsValid] = useState(false);
 
-  useEffect(
-    () => {
+  //goal: run form validity check only after user hasn't typed anything for 500ms
+  useEffect(() => {
+    const timeoutID = setTimeout(() => {
+      console.log('Checking form validity');
       setFormIsValid(
         enteredEmail.includes('@') && enteredPassword.trim().length > 6
       );
-    },
-    //usually add as deps everything used in side effect fn -> setFromIsValid guaranteed to never change by React
-    [enteredEmail, enteredPassword]
-  );
+    }, 500);
+
+    // we return a cleanup function
+    // runs every time the "side effect function" is called, except the first time
+    return () => {
+      console.log('cleanup');
+
+      // clear timeout set in last side effect fn execution
+      // remember: fn runs BEFORE next side effect fn execution
+      // result: debouncing the execution of the validation function
+      // -> delaying execution until 500 ms actually passed since last change to email/pw
+      clearTimeout(timeoutID);
+    };
+  }, [enteredEmail, enteredPassword]);
 
   const emailChangeHandler = event => {
     setEnteredEmail(event.target.value);
