@@ -10,7 +10,6 @@ function App() {
 
   useEffect(() => {
     const loginInfo = localStorage.getItem('isLoggedIn');
-    alert('Running effect');
     if (loginInfo === '1') {
       setIsLoggedIn(true);
     }
