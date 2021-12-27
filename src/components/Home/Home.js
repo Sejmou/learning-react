@@ -7,8 +7,6 @@ import { useContext } from 'react';
 import AuthContext from '../../store/auth-context';
 
 const Home = () => {
-  //Note: Max doesn't use context here, relies on props instead
-  //props are generally still ok to use if we are not passing data through several layers
   const ctx = useContext(AuthContext);
 
   return (
