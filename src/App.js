@@ -34,12 +34,14 @@ function App() {
     <AuthContext.Provider
       value={{
         isLoggedIn: isLoggedIn,
-      }} // pass data that can be consumed by nested components with AuthContext.Consumer
+        onLogout: logoutHandler,
+        onLogin: loginHandler,
+      }} // pass data - use in components with AuthContext.Consumer or useContext(AuthContext)
     >
-      <MainHeader onLogout={logoutHandler} />
+      <MainHeader />
       <main>
-        {!isLoggedIn && <Login onLogin={loginHandler} />}
-        {isLoggedIn && <Home onLogout={logoutHandler} />}
+        {!isLoggedIn && <Login />}
+        {isLoggedIn && <Home />}
       </main>
     </AuthContext.Provider>
   );

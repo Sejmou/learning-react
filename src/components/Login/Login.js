@@ -5,6 +5,8 @@ import classes from './Login.module.css';
 import Button from '../UI/Button/Button';
 import { useEffect } from 'react';
 import { useReducer } from 'react';
+import { useContext } from 'react';
+import AuthContext from '../../store/auth-context';
 
 //A reducer does NOT rely on the component itself
 //It works only with the state that is passed to it!
@@ -31,11 +33,16 @@ const passwordReducer = (state, action) => {
   return { value: '', isValid: false };
 };
 
-const Login = props => {
+const Login = () => {
   // const [enteredEmail, setEnteredEmail] = useState('');
   // const [emailIsValid, setEmailIsValid] = useState();
   // const [enteredPassword, setEnteredPassword] = useState('');
   // const [passwordIsValid, setPasswordIsValid] = useState();
+
+  //Note: Max doesn't use context here, relies on props instead
+  //props are generally still ok to use if we are not passing data through several layers
+  const ctx = useContext(AuthContext);
+
   const [formIsValid, setFormIsValid] = useState(false);
 
   const [emailState, dispatchEmail] = useReducer(
@@ -83,7 +90,7 @@ const Login = props => {
 
   const submitHandler = event => {
     event.preventDefault();
-    props.onLogin(emailState.value, passwordState.value);
+    ctx.onLogin(emailState.value, passwordState.value);
   };
 
   return (
