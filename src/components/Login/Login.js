@@ -1,4 +1,10 @@
-import React, { useState, useEffect, useReducer, useContext } from 'react';
+import React, {
+  useState,
+  useEffect,
+  useReducer,
+  useContext,
+  useRef,
+} from 'react';
 
 import Card from '../UI/Card/Card';
 import classes from './Login.module.css';
@@ -45,6 +51,9 @@ const Login = () => {
     isValid: null,
   });
 
+  const emailInputRef = useRef();
+  const passwordInputRef = useRef();
+
   // extract only props that are relevant for side effect fn in useEffect below!
   // This way we save us from unncessary fn executions if only value changed but not validity
   const { isValid: emailIsValid } = emailState;
@@ -80,7 +89,13 @@ const Login = () => {
 
   const submitHandler = event => {
     event.preventDefault();
-    ctx.onLogin(emailState.value, passwordState.value);
+
+    if (formIsValid) ctx.onLogin(emailState.value, passwordState.value);
+    // If form is invalid, we want to focus first input that is invalid
+    // We make use of forwardRef in our custom input component
+    // it exposes focus() that calls HTML input's focus()
+    else if (!emailIsValid) emailInputRef.current.focus();
+    else if (!passwordIsValid) passwordInputRef.current.focus();
   };
 
   return (
@@ -94,6 +109,7 @@ const Login = () => {
           isValid={emailIsValid}
           onChange={emailChangeHandler}
           onBlur={validateEmailHandler}
+          ref={emailInputRef}
         />
         <Input
           type="password"
@@ -103,9 +119,10 @@ const Login = () => {
           isValid={passwordIsValid}
           onChange={passwordChangeHandler}
           onBlur={validatePasswordHandler}
+          ref={passwordInputRef}
         />
         <div className={classes.actions}>
-          <Button type="submit" className={classes.btn} disabled={!formIsValid}>
+          <Button type="submit" className={classes.btn}>
             Login
           </Button>
         </div>
