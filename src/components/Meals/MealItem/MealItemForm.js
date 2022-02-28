@@ -16,7 +16,7 @@ const MealItemForm = props => {
     const enteredAmountNo = +enteredAmount; // value is always a string, convert!
 
     if (
-      enteredAmount.trim().length == 0 ||
+      enteredAmount.trim().length === 0 ||
       enteredAmountNo < amountMin ||
       enteredAmount > amountMax
     ) {

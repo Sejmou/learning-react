@@ -6,13 +6,26 @@ import { useContext } from 'react';
 
 const Cart = props => {
   const cartCtx = useContext(CartContext);
+
   const totalAmount = `$ ${cartCtx.totalAmount.toFixed(2)}`;
   const hasItems = cartCtx.items.length > 0;
+
+  const cartItemRemoveHandler = id => cartCtx.removeItem(id);
+  const cartItemAddHandler = item => cartCtx.addItem({ ...item, amount: 1 });
 
   const cartItems = (
     <ul className={classes['cart-items']}>
       {cartCtx.items.map(item => (
-        <CartItem key={item.id} {...item} />
+        <CartItem
+          key={item.id}
+          {...item} // pass all other props of item as key value pairs
+          onRemove={
+            //bind() creates "bound function" whose first argument is bound to second argument we passed to bind()
+            // first argument to bind() sets value of "this" inside the created function's body
+            cartItemRemoveHandler.bind(null, item.id)
+          }
+          onAdd={cartItemAddHandler.bind(null, item)}
+        />
       ))}
     </ul>
   );

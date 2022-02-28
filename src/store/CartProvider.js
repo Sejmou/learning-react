@@ -9,19 +9,71 @@ const defaultCartState = {
 // don't define this is in provider!
 // shouldn't be re-evaluated/re-created every time provider changes
 const cartReducer = (state, action) => {
-  switch (action.type) {
-    case 'ADD':
-      const updatedItems = [...state.items, action.item];
-      const updatedTotalAmount =
-        state.totalAmount + action.item.price * action.item.amount;
+  if (action.type === 'ADD') {
+    // note: calculating totals with floating point prices is not ideal
+    // problem: floating point imprecision :/
+    const updatedTotalAmount =
+      state.totalAmount + action.item.price * action.item.amount;
 
-      return {
-        items: updatedItems,
-        totalAmount: updatedTotalAmount,
+    const existingCartItemIndex = state.items.findIndex(
+      item => item.id === action.item.id
+    );
+    const existingCartItem = state.items[existingCartItemIndex];
+
+    let updatedItems;
+
+    if (existingCartItem) {
+      const updatedItem = {
+        ...existingCartItem,
+        amount: existingCartItem.amount + action.item.amount,
       };
-  }
 
-  return defaultCartState;
+      updatedItems = [...state.items];
+      updatedItems[existingCartItemIndex] = updatedItem;
+    } else {
+      updatedItems = [...state.items, action.item];
+    }
+
+    return {
+      items: updatedItems,
+      totalAmount: updatedTotalAmount,
+    };
+  } else if (action.type === 'REMOVE') {
+    // remove one item from cart (note: not removing all items with same ID at once!)
+    const existingCartItemIndex = state.items.findIndex(
+      item => item.id === action.id
+    );
+    const existingCartItem = state.items[existingCartItemIndex];
+
+    // note: calculating totals with floating point prices is not ideal
+    // problem: floating point imprecision :/
+    const updatedTotalAmount = existingCartItem
+      ? state.totalAmount - existingCartItem.price
+      : state.totalAmount;
+
+    let updatedItems;
+    if (existingCartItem?.amount === 1) {
+      updatedItems = state.items.filter(
+        item => item.id !== existingCartItem.id
+      );
+    } else {
+      updatedItems = [...state.items];
+      if (existingCartItem) {
+        const updatedItem = {
+          ...existingCartItem,
+          amount: existingCartItem.amount - 1,
+        };
+        updatedItems[existingCartItemIndex] = updatedItem;
+      }
+    }
+
+    return {
+      items: updatedItems,
+      totalAmount: updatedTotalAmount,
+    };
+  } else {
+    return defaultCartState;
+  }
 };
 
 const CartProvider = props => {
@@ -30,10 +82,10 @@ const CartProvider = props => {
     defaultCartState
   ); //use reducer, set default state
 
-  const addItemToCartHandler = item => {
+  const addItemToCartHandler = item =>
     dispatchCartAction({ type: 'ADD', item });
-  };
-  const removeItemFromCartHandler = () => {};
+  const removeItemFromCartHandler = id =>
+    dispatchCartAction({ type: 'REMOVE', id });
 
   const cartCtx = {
     items: cartState.items,
