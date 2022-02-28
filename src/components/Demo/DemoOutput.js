@@ -3,7 +3,7 @@ import React from 'react';
 const DemoOutput = props => {
   console.log('DemoOutput reevaluated!');
 
-  return <p>{props.showSpecialText ? 'Special demo text' : 'Regular text'}</p>;
+  return <p>{props.showText ? 'Special demo text' : ''}</p>;
 };
 
 // using React.memo allows us to tell React that it should not always reevaluate this component
