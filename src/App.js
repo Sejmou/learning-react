@@ -15,6 +15,12 @@ function App() {
 
   const allowToggleHandler = useCallback(() => setAllowToggle(true), []);
 
+  // note: when state-updating fns are called, React does not do update immediately! it is merely scheduled
+  // Execution order of state changes is guaranteed by React, as long as dependencies are mentioned explicitly in deps array!
+  // Otherwise it is possible that e.g. the callback below might still have an outdated value for allowToggle and could produce a wrong result
+  // remember that passing deps is also important for other hooks such as useEffect!
+  // Furthermore, always pass "callback function" with previous state as input to state-updating functions, otherwise same issue as with missing deps possible!
+  // Another note: React "batches" synchronous state updates occurring in the same state-updating function together into a single state update
   const toggleParagraphHandler = useCallback(() => {
     if (allowToggle) setShowParagraph(prevShowParagraph => !prevShowParagraph);
   }, [allowToggle]);
