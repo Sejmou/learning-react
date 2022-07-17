@@ -24,7 +24,7 @@ class UserFinder extends Component {
   }
 
   componentDidMount() {
-    // executes just once, before component is rendered for first time
+    // executes just once, when component has been evaluated and rendered for first time (state updates occuring in here will still be reflected before the user sees the intermediate state)
     // roughly equivalent to useEffect(..., []) or useEffect(..., [someDep]) if someDep just changes once in the beginning
 
     // this is just a toy example, mimicking fetching users from a DB to show how componentDidMount() can be used
