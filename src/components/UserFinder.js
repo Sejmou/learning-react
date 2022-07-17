@@ -14,13 +14,24 @@ class UserFinder extends Component {
   constructor() {
     super();
     this.state = {
-      filteredUsers: DUMMY_USERS,
+      filteredUsers: [],
       searchTerm: '',
     };
   }
 
   searchChangeHandler(event) {
     this.setState({ searchTerm: event.target.value });
+  }
+
+  componentDidMount() {
+    // executes just once, before component is rendered for first time
+    // roughly equivalent to useEffect(..., []) or useEffect(..., [someDep]) if someDep just changes once in the beginning
+
+    // this is just a toy example, mimicking fetching users from a DB to show how componentDidMount() can be used
+    // in our case, we could actually just provide the DUMMY_USERS in the constructor directly
+
+    // imagine you send an HTTP request here...
+    setTimeout(() => this.setState({ filteredUsers: DUMMY_USERS }), 500);
   }
 
   componentDidUpdate(prevProps, prevState) {
