@@ -3,7 +3,7 @@ import React from 'react';
 import classes from './Button.module.css';
 
 const Button = props => {
-  console.log('Button reevaluated!');
+  console.log('Button evaluated!');
 
   return (
     <button
