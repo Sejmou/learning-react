@@ -8,28 +8,31 @@ function App() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
 
-  const fetchMoviesHandler = useCallback(async () => {
-    setIsLoading(true);
-    setError(null);
-    try {
-      const response = await fetch('https://swapi.dev/api/films/');
-      if (!response.ok) {
-        throw new Error('Something went wrong!');
+  const fetchMoviesHandler = useCallback(() => {
+    async function fetchMovies() {
+      setIsLoading(true);
+      setError(null);
+      try {
+        const response = await fetch('https://swapi.dev/api/films/');
+        if (!response.ok) {
+          throw new Error('Something went wrong!');
+        }
+
+        const data = await response.json();
+        const transformedMovies = data.results.map(movieData => ({
+          id: movieData.episode_id,
+          title: movieData.title,
+          openingText: movieData.opening_crawl,
+          releaseDate: movieData.release_date,
+        }));
+        setMovies(transformedMovies);
+      } catch (error) {
+        setError(error.message);
       }
 
-      const data = await response.json();
-      const transformedMovies = data.results.map(movieData => ({
-        id: movieData.episode_id,
-        title: movieData.title,
-        openingText: movieData.opening_crawl,
-        releaseDate: movieData.release_date,
-      }));
-      setMovies(transformedMovies);
-    } catch (error) {
-      setError(error.message);
+      setIsLoading(false);
     }
-
-    setIsLoading(false);
+    fetchMovies();
   }, []);
 
   useEffect(() => fetchMoviesHandler(), [fetchMoviesHandler]); // listing fetchMoviesHandler as dep. is not really necessary here, but useful if the handler relies on external state
