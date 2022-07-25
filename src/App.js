@@ -2,16 +2,33 @@ import React, { useEffect, useState } from 'react';
 
 import Tasks from './components/Tasks/Tasks';
 import NewTask from './components/NewTask/NewTask';
-import useBackend from './hooks/useBackend';
+import useHttp from './hooks/use-http';
 
 function App() {
   const [tasks, setTasks] = useState([]);
-  const [fetchTasks, isLoading, error] = useBackend({
-    endpointName: 'tasks',
-    successCallback: loadedTasks => setTasks(loadedTasks),
-  });
 
-  useEffect(() => fetchTasks(), [fetchTasks]);
+  const transformTasks = tasksObj => {
+    const loadedTasks = [];
+    for (const taskKey in tasksObj) {
+      loadedTasks.push({ id: taskKey, text: tasksObj[taskKey].text });
+    }
+    return loadedTasks;
+  };
+
+  const {
+    isLoading,
+    error,
+    sendRequest: fetchTasks,
+  } = useHttp(
+    {
+      url: 'https://react-course-schwarzmueller-default-rtdb.europe-west1.firebasedatabase.app/tasks.json',
+    },
+    transformTasks
+  );
+
+  useEffect(() => {
+    fetchTasks();
+  }, []);
 
   const taskAddHandler = task => {
     console.log('new task', task);
