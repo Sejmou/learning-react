@@ -1,6 +1,6 @@
 import { useState, useCallback } from 'react';
 
-const useHttp = (requestConfig, handleData) => {
+const useHttp = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
 
@@ -8,7 +8,7 @@ const useHttp = (requestConfig, handleData) => {
   // without useCallback we would get an infinite loop as the component using this hook would receive a new sendRequest function, even though it might contain the exact same logic
   // remember: functions are objects in JS, therefore a newly created function is not equal to another with the same content (when compared with ===)
   // the reason for this is that they are in fact two separate objects, stored in different locations in memory
-  const sendRequest = useCallback(async () => {
+  const sendRequest = useCallback(async (requestConfig, handleData) => {
     setIsLoading(true);
     setError(null);
     try {
@@ -29,7 +29,7 @@ const useHttp = (requestConfig, handleData) => {
       setError(err.message || 'Something went wrong!');
     }
     setIsLoading(false);
-  }, [requestConfig, handleData]); // list
+  }, []);
 
   return {
     isLoading,
