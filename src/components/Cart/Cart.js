@@ -2,11 +2,11 @@ import { useContext } from 'react';
 
 import Modal from '../UI/Modal';
 import CartItem from './CartItem';
+import CheckoutForm from './CheckoutForm';
 import classes from './Cart.module.css';
 import CartContext from '../../store/cart-context';
 
 const Cart = props => {
-  console.log('props', props);
   const cartCtx = useContext(CartContext);
 
   const totalAmount = `$${cartCtx.totalAmount.toFixed(2)}`;
@@ -37,13 +37,27 @@ const Cart = props => {
 
   return (
     <Modal onClose={props.onClose}>
-      {cartItems}
-      <div className={classes.total}>
-        <span>Total Amount</span>
-        <span>{totalAmount}</span>
-      </div>
+      {hasItems ? (
+        <>
+          {cartItems}
+          <div className={classes.total}>
+            <span>Total Amount</span>
+            <span>{totalAmount}</span>
+          </div>
+          <CheckoutForm />
+        </>
+      ) : (
+        <p>
+          The cart is currently empty.
+          <br />
+          Choose some delicious food first and come back here to order it!
+        </p>
+      )}
       <div className={classes.actions}>
-        <button className={classes['button--alt']} onClick={props.onClose}>
+        <button
+          className={hasItems ? classes['button--alt'] : classes.button}
+          onClick={props.onClose}
+        >
           Close
         </button>
         {hasItems && (
