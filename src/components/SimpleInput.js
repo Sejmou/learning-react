@@ -8,7 +8,8 @@ const SimpleInput = props => {
   // reasoning behind that: "If you're manipulating the DOM directly, why are you even using React?"
   const nameInputRef = useRef();
   const [enteredName, setEnteredName] = useState('');
-  const [enteredNameIsValid, setEnteredNameIsValid] = useState(true);
+  const [enteredNameIsValid, setEnteredNameIsValid] = useState(false);
+  const [enteredNameTouched, setEnteredNameTouched] = useState(false);
 
   const nameInputChangeHandler = event => {
     setEnteredName(event.target.value);
@@ -16,6 +17,8 @@ const SimpleInput = props => {
 
   const formSubmissionHandler = event => {
     event.preventDefault(); // prevent default behavior of submitting to server serving the HTML -> would result in page reload and losing state
+
+    setEnteredNameTouched(true);
 
     if (enteredName.trim() === '') {
       setEnteredNameIsValid(false);
@@ -28,9 +31,11 @@ const SimpleInput = props => {
     console.log('current value of input ref:', inputRefVal);
   };
 
-  const nameInputClasses = enteredNameIsValid
-    ? 'form-control'
-    : 'form-control invalid';
+  const nameInputIsInvalid = enteredNameTouched && !enteredNameIsValid;
+
+  const nameInputClasses = nameInputIsInvalid
+    ? 'form-control invalid'
+    : 'form-control';
 
   return (
     <form onSubmit={formSubmissionHandler}>
@@ -42,7 +47,7 @@ const SimpleInput = props => {
           onChange={nameInputChangeHandler}
           ref={nameInputRef} // in practice wwe would not use both change handler and ref!
         />
-        {!enteredNameIsValid && (
+        {nameInputIsInvalid && (
           <p className="error-text">Name must not be empty!</p>
         )}
       </div>
