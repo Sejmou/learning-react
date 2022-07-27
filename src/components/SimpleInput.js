@@ -13,6 +13,17 @@ const SimpleInput = props => {
 
   const nameInputChangeHandler = event => {
     setEnteredName(event.target.value);
+
+    setEnteredNameIsValid(event.target.value.trim() !== '');
+  };
+
+  const nameInputBlurHandler = event => {
+    setEnteredNameTouched(true);
+
+    if (enteredName.trim() === '') {
+      setEnteredNameIsValid(false);
+      return;
+    }
   };
 
   const formSubmissionHandler = event => {
@@ -45,6 +56,7 @@ const SimpleInput = props => {
           type="text"
           id="name"
           onChange={nameInputChangeHandler}
+          onBlur={nameInputBlurHandler}
           ref={nameInputRef} // in practice wwe would not use both change handler and ref!
         />
         {nameInputIsInvalid && (
