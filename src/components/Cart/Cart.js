@@ -2,7 +2,6 @@ import { useContext } from 'react';
 
 import Modal from '../UI/Modal';
 import CartItem from './CartItem';
-import CheckoutForm from './CheckoutForm';
 import classes from './Cart.module.css';
 import CartContext from '../../store/cart-context';
 
@@ -44,7 +43,6 @@ const Cart = props => {
             <span>Total Amount</span>
             <span>{totalAmount}</span>
           </div>
-          <CheckoutForm />
         </>
       ) : (
         <p>
@@ -61,8 +59,8 @@ const Cart = props => {
           Close
         </button>
         {hasItems && (
-          <button className={classes.button} onClick={props.onOrder}>
-            Order
+          <button className={classes.button} onClick={props.onCheckout}>
+            Checkout
           </button>
         )}
       </div>

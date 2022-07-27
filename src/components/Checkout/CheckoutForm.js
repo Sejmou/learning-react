@@ -1,5 +1,7 @@
 import React from 'react';
 
+import classes from './CheckoutForm.module.css';
+
 const CheckoutForm = () => {
   return (
     <form>

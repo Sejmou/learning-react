@@ -1,0 +1,17 @@
+.container {
+  width: 100%;
+  justify-content: space-between;
+  display: flex;
+  border-bottom: 2px solid #8a2b06;
+  padding: 0.5rem 0;
+  margin: 0.5rem 0;
+}
+
+.price {
+  color: #8a2b06;
+}
+
+h2,
+h3 {
+  margin: 0;
+}
