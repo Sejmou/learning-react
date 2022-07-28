@@ -1,4 +1,4 @@
-import { useContext } from 'react';
+import { useContext, useState } from 'react';
 
 import Modal from '../UI/Modal';
 import CartItem from './CartItem';
@@ -9,6 +9,8 @@ import CartContext from '../../store/cart-context';
 const formId = 'checkout-form';
 
 const Checkout = props => {
+  const [showCheckoutConfirmation, setShowCheckoutConfirmation] =
+    useState(false);
   const cartCtx = useContext(CartContext);
 
   const totalAmount = `$${cartCtx.totalAmount.toFixed(2)}`;
@@ -29,6 +31,8 @@ const Checkout = props => {
   const submitSuccessHandler = formValue => {
     console.log('form submitted successfully!');
     console.log('value', formValue);
+    setShowCheckoutConfirmation(true);
+    props.onCheckoutSuccess();
   };
 
   return (
@@ -49,6 +53,11 @@ const Checkout = props => {
           <CheckoutForm id={formId} onSubmitSuccess={submitSuccessHandler} />
         </div>
       </div>
+      {showCheckoutConfirmation && (
+        <p className={classes['checkout-confirmation']}>
+          Thank you for your order! We will try to deliver it ASAP.
+        </p>
+      )}
       <div className={classes.actions}>
         <button className={classes['button--alt']} onClick={props.onBack}>
           Back
