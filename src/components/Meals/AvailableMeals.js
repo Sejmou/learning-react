@@ -80,11 +80,19 @@ const AvailableMeals = () => {
     />
   ));
 
+  let content = mealsList;
+
+  if (error) {
+    content = 'Could not fetch meals :/';
+  }
+
+  if (isLoading) {
+    content = 'Loading our tasty meals...';
+  }
+
   return (
     <section className={classes.meals}>
-      <Card>
-        {meals.length > 0 ? <ul>{mealsList}</ul> : 'Could not fetch meals :/'}
-      </Card>
+      <Card>{content}</Card>
     </section>
   );
 };
