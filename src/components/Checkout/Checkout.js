@@ -6,6 +6,8 @@ import CheckoutForm from '../Checkout/CheckoutForm';
 import classes from './Checkout.module.css';
 import CartContext from '../../store/cart-context';
 
+const formId = 'checkout-form';
+
 const Checkout = props => {
   const cartCtx = useContext(CartContext);
 
@@ -24,6 +26,11 @@ const Checkout = props => {
     </ul>
   );
 
+  const submitSuccessHandler = formValue => {
+    console.log('form submitted successfully!');
+    console.log('value', formValue);
+  };
+
   return (
     <Modal onClose={props.onClose}>
       <div className={classes.container}>
@@ -39,14 +46,16 @@ const Checkout = props => {
         </div>
         <div>
           <h2>Delivery Details</h2>
-          <CheckoutForm />
+          <CheckoutForm id={formId} onSubmitSuccess={submitSuccessHandler} />
         </div>
       </div>
       <div className={classes.actions}>
         <button className={classes['button--alt']} onClick={props.onBack}>
           Back
         </button>
-        <button className={classes.button} onClick={props.onOrder}>
+
+        {/* this is apparently a way to submit forms with plain React: https://stackoverflow.com/a/53573760/13727176 */}
+        <button type="submit" form={formId} className={classes.button}>
           Order
         </button>
       </div>

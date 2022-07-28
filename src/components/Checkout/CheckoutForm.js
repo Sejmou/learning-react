@@ -2,8 +2,8 @@ import React from 'react';
 import Input from '../UI/Input';
 import useInput from '../../hooks/use-input';
 
-const CheckoutForm = () => {
-  const inputProps = [
+const CheckoutForm = props => {
+  const inputPropsObjs = [
     useInput({
       id: 'name',
       label: 'Your Name',
@@ -30,9 +30,32 @@ const CheckoutForm = () => {
     }),
   ];
 
-  const inputs = inputProps.map(props => <Input {...props} />);
+  const inputs = inputPropsObjs.map(props => (
+    <Input key={props.id} {...props} />
+  ));
+  const formIsValid = inputPropsObjs.every(obj => obj.isValid);
+  const inputIds = inputPropsObjs.map(obj => obj.id);
 
-  return <form>{inputs}</form>;
+  const submissionHandler = event => {
+    event.preventDefault();
+
+    // this will make any validation errors appear
+    touchInputs(inputIds);
+
+    if (formIsValid) {
+      const formValue = inputPropsObjs.reduce((prev, curr) => {
+        prev[curr.id] = curr.value;
+        return prev;
+      }, {});
+      props.onSubmitSuccess(formValue);
+    }
+  };
+
+  return (
+    <form id={props.id} onSubmit={submissionHandler}>
+      {inputs}
+    </form>
+  );
 };
 
 function isNonEmpty(inputValue) {
@@ -41,6 +64,15 @@ function isNonEmpty(inputValue) {
 
 function containsOnlyDigits(inputValue) {
   return /^\d+$/.test(inputValue);
+}
+
+// could not find a smarter way to mark all inputs as touched and (as a result) display any validation errors to the user on form submission
+function touchInputs(inputIDs) {
+  inputIDs.forEach(id => {
+    const el = document.getElementById(id);
+    el.focus();
+    el.blur();
+  });
 }
 
 export default CheckoutForm;
