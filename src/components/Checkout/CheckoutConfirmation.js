@@ -2,16 +2,16 @@ import { useContext } from 'react';
 
 import Modal from '../UI/Modal';
 import CartItem from './CartItem';
-import CheckoutForm from '../Checkout/CheckoutForm';
 import classes from './Checkout.module.css';
 import CartContext from '../../store/cart-context';
-import DeliveryDetailsContext from '../../store/delivery-details-context';
+import DeliveryDetailsContext, {
+  deliveryDetailDisplayNames,
+} from '../../store/delivery-details-context';
+import DeliveryDetailItem from './DeliveryDetailItem';
 
-const formId = 'checkout-form';
-
-const Checkout = props => {
+const CheckoutConfirmation = props => {
   const cartCtx = useContext(CartContext);
-  const deliveryDetailsCtx = useContext(DeliveryDetailsContext);
+  const deliveryDetailsContext = useContext(DeliveryDetailsContext);
 
   const totalAmount = `$${cartCtx.totalAmount.toFixed(2)}`;
 
@@ -28,13 +28,26 @@ const Checkout = props => {
     </ul>
   );
 
-  const submitSuccessHandler = formValue => {
-    deliveryDetailsCtx.set(formValue);
-    props.onCheckoutSuccess();
+  const deliveryDetailList = Object.entries(deliveryDetailsContext)
+    .filter(([key, value]) => deliveryDetailDisplayNames[key] !== undefined)
+    .map(([key, value]) => (
+      <DeliveryDetailItem
+        leftVal={deliveryDetailDisplayNames[key]}
+        rightVal={value}
+      />
+    ));
+
+  const closeHandler = () => {
+    cartCtx.clear();
+    props.onClose();
   };
 
   return (
-    <Modal onClose={props.onClose}>
+    <Modal onClose={closeHandler}>
+      <h2>Order Summary</h2>
+      <p className={classes['checkout-confirmation']}>
+        Thank you very much for your order! We will try to deliver it ASAP.
+      </p>
       <div className={classes.container}>
         <div className={classes['order-summary-container']}>
           <h3>Your Order</h3>
@@ -47,22 +60,17 @@ const Checkout = props => {
           </div>
         </div>
         <div>
-          <h2>Delivery Details</h2>
-          <CheckoutForm id={formId} onSubmitSuccess={submitSuccessHandler} />
+          <h3>Delivery Details</h3>
+          {deliveryDetailList}
         </div>
       </div>
       <div className={classes.actions}>
-        <button className={classes['button--alt']} onClick={props.onBack}>
-          Back
-        </button>
-
-        {/* this is apparently a way to submit forms with plain React: https://stackoverflow.com/a/53573760/13727176 */}
-        <button type="submit" form={formId} className={classes.button}>
-          Order
+        <button className={classes.button} onClick={closeHandler}>
+          Close
         </button>
       </div>
     </Modal>
   );
 };
 
-export default Checkout;
+export default CheckoutConfirmation;

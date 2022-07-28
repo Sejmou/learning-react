@@ -1,5 +1,6 @@
 .form-control {
-  margin-bottom: 1rem;
+  margin-bottom: 0.25rem;
+  height: 85px;
 }
 
 .form-control input,

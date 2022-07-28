@@ -1,60 +1,58 @@
-import { useState, useContext } from 'react';
+import { useState } from 'react';
 
 import Header from './components/Layout/Header';
 import Meals from './components/Meals/Meals';
-import Cart from './components/Cart/Cart';
 import CartProvider from './store/CartProvider';
+import DeliveryDetailsProvider from './store/DeliveryDetailsProvider';
+import Cart from './components/Cart/Cart';
 import Checkout from './components/Checkout/Checkout';
-import CartContext from './store/cart-context';
+import CheckoutConfirmation from './components/Checkout/CheckoutConfirmation';
 
 function App() {
-  const [cartIsShown, setCartIsShown] = useState(false);
-  const [checkoutIsShown, setCheckoutIsShown] = useState(false);
-  const cartCtx = useContext(CartContext);
+  const [currentMainPage, setCurrentMainPage] = useState('menu');
 
   const showCartHandler = () => {
-    setCartIsShown(true);
+    setCurrentMainPage('cart');
   };
 
-  const hideCartHandler = () => {
-    setCartIsShown(false);
+  const backToMenuHandler = () => {
+    setCurrentMainPage('menu');
   };
 
   const checkoutHandler = () => {
-    setCartIsShown(false);
-    setCheckoutIsShown(true);
-  };
-
-  const hideCheckoutHandler = () => {
-    setCheckoutIsShown(false);
-  };
-
-  const backHandler = () => {
-    setCheckoutIsShown(false);
-    setCartIsShown(true);
+    setCurrentMainPage('checkout');
   };
 
   const checkoutSuccessHandler = () => {
-    // I know, just closing the dialog is not really realistic behavior lol
-    setTimeout(() => {
-      setCartIsShown(false);
-      setCheckoutIsShown(false);
-      cartCtx.clear();
-    }, 5000);
+    setCurrentMainPage('confirmation');
   };
+
+  const getCurrentModal = mainPageId => {
+    switch (mainPageId) {
+      case 'cart':
+        return (
+          <Cart onClose={backToMenuHandler} onCheckout={checkoutHandler} />
+        );
+      case 'checkout':
+        return (
+          <Checkout
+            onClose={backToMenuHandler}
+            onBack={showCartHandler}
+            onCheckoutSuccess={checkoutSuccessHandler}
+          />
+        );
+      case 'confirmation':
+        return <CheckoutConfirmation onClose={backToMenuHandler} />;
+      default:
+        return '';
+    }
+  };
+
+  const modal = getCurrentModal(currentMainPage);
 
   return (
     <CartProvider>
-      {cartIsShown && (
-        <Cart onClose={hideCartHandler} onCheckout={checkoutHandler} />
-      )}
-      {checkoutIsShown && (
-        <Checkout
-          onClose={hideCheckoutHandler}
-          onBack={backHandler}
-          onCheckoutSuccess={checkoutSuccessHandler}
-        />
-      )}
+      <DeliveryDetailsProvider>{modal}</DeliveryDetailsProvider>
       <Header onShowCart={showCartHandler} />
       <main>
         <Meals />
