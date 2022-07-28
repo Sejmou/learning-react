@@ -6,12 +6,15 @@ import CheckoutForm from '../Checkout/CheckoutForm';
 import classes from './Checkout.module.css';
 import CartContext from '../../store/cart-context';
 import DeliveryDetailsContext from '../../store/delivery-details-context';
+import useBackend from '../../hooks/use-backend';
 
 const formId = 'checkout-form';
 
 const Checkout = props => {
   const cartCtx = useContext(CartContext);
   const deliveryDetailsCtx = useContext(DeliveryDetailsContext);
+
+  const { sendRequest, isLoading, error } = useBackend();
 
   const totalAmount = `$${cartCtx.totalAmount.toFixed(2)}`;
 
@@ -28,10 +31,36 @@ const Checkout = props => {
     </ul>
   );
 
-  const submitSuccessHandler = formValue => {
-    deliveryDetailsCtx.set(formValue);
-    props.onCheckoutSuccess();
+  // called when form is valid and user clicked the submit/order button
+  const submitSuccessHandler = async formValue => {
+    await sendRequest(
+      {
+        endpoint: 'orders',
+        body: {
+          ...formValue,
+          order: cartCtx.items.map(item => ({
+            id: item.id,
+            amount: item.amount,
+          })),
+          timeStamp: new Date().toISOString(),
+        }, // this is a really bad and insecure way of doing things, backend should add timestamp and validate data; TODO: research how to do this with Firebase
+      },
+      () => {
+        deliveryDetailsCtx.set(formValue);
+        props.onCheckoutSuccess();
+      }
+    );
   };
+
+  let orderStatusInfo = '';
+
+  if (isLoading) {
+    orderStatusInfo = 'Processing your order...';
+  }
+  if (error) {
+    orderStatusInfo =
+      'Something went wrong while sending your order. Try clicking the "Order" button again.';
+  }
 
   return (
     <Modal onClose={props.onClose}>
@@ -51,6 +80,7 @@ const Checkout = props => {
           <CheckoutForm id={formId} onSubmitSuccess={submitSuccessHandler} />
         </div>
       </div>
+      {orderStatusInfo}
       <div className={classes.actions}>
         <button className={classes['button--alt']} onClick={props.onBack}>
           Back
