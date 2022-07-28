@@ -1,18 +1,52 @@
-.input {
-  display: flex;
-  align-items: center;
+.form-control {
+  margin-bottom: 1rem;
+}
+
+.form-control input,
+.form-control label {
+  display: block;
+}
+
+/* .form-control label {
   margin-bottom: 0.5rem;
-}
+} */
 
-.input label {
-  font-weight: bold;
-  margin-right: 1rem;
-}
-
-.input input {
-  width: 3rem;
-  border-radius: 5px;
-  border: 1px solid #ccc;
+.form-control input,
+.form-control select {
   font: inherit;
-  padding-left: 0.5rem;
+  padding: 0.5rem;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+  width: 20rem;
+  max-width: 100%;
+}
+
+.form-control input:focus {
+  outline: none;
+  border-color: #8a2b06;
+  background-color: #fbe8d2;
+}
+
+.form-actions {
+  text-align: right;
+}
+
+.form-actions .button {
+  margin-left: 1rem;
+}
+
+.invalid input {
+  border: 1px solid #b40e0e;
+  background-color: #fddddd;
+}
+
+.invalid input:focus {
+  border-color: #ff8800;
+  background-color: #fbe8d2;
+}
+
+.error-text {
+  font-size: smaller;
+  margin: 0;
+  color: #b40e0e;
 }
