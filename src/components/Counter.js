@@ -1,25 +1,29 @@
 import { useSelector, useDispatch } from 'react-redux';
 
+import { counterActions } from '../store';
 import classes from './Counter.module.css';
 
 const Counter = () => {
-  const counter = useSelector(state => state.counter);
-  const showCounter = useSelector(state => state.showCounter); // multiple calls to useSelector are no problem
+  // note that, contrary to before, state.counter is now the counter slice of the global app state
+  // so, it is an object with counter and showCounter props, which we can simply extract
+  const { counter, showCounter } = useSelector(state => state.counter);
 
   const dispatch = useDispatch();
 
   const incrementHandler = () => {
-    dispatch({ type: 'increment' });
+    dispatch(counterActions.increment());
+    // this will create an action that looks like this: { type: SOME_UNIQUE_ID }
   };
   const increaseHandler = () => {
-    dispatch({ type: 'increase', amount: 5 });
+    dispatch(counterActions.increase(10));
+    // this will create an action that looks like this: { type: SOME_UNIQUE_ID, payload: 10 }
   };
   const decrementHandler = () => {
-    dispatch({ type: 'decrement' });
+    dispatch(counterActions.decrement());
   };
 
-  const toggleCounterHandler = () => {
-    dispatch({ type: 'toggle' });
+  const toggleHandler = () => {
+    dispatch(counterActions.toggle());
   };
 
   return (
@@ -31,7 +35,7 @@ const Counter = () => {
         <button onClick={increaseHandler}>Increase by 5</button>
         <button onClick={decrementHandler}>Decrement</button>
       </div>
-      <button onClick={toggleCounterHandler}>Toggle Counter</button>
+      <button onClick={toggleHandler}>Toggle Counter</button>
     </main>
   );
 };
