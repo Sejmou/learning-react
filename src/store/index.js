@@ -4,6 +4,9 @@ import { createStore } from 'redux';
 const initialState = { counter: 0, showCounter: true };
 
 const counterReducer = (state = initialState, action) => {
+  // be careful to ALWAYS return new state and NOT modify the existing/previous state
+  // Redux only works reliably (without bugs) if you obey to this rule!
+
   if (action.type === 'increment') {
     return {
       ...state,
