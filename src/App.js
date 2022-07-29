@@ -1,32 +1,20 @@
-import { useSelector, useDispatch } from 'react-redux';
+import { useSelector } from 'react-redux';
 
 import Counter from './components/Counter';
 import Header from './components/Header';
 import Auth from './components/Auth';
-import { authActions } from './store';
+import UserProfile from './components/UserProfile';
 
 function App() {
   const { isAuthenticated } = useSelector(state => state.auth);
-  const dispatch = useDispatch();
 
-  const loginHandler = () => {
-    dispatch(authActions.login());
-  };
-
-  const logoutHandler = () => {
-    dispatch(authActions.logout());
-  };
-
-  const content = isAuthenticated ? (
+  return (
     <>
-      <Header onLogout={logoutHandler} />
+      <Header />
+      {isAuthenticated ? <UserProfile /> : <Auth />}
       <Counter />
     </>
-  ) : (
-    <Auth onLogin={loginHandler} />
   );
-
-  return content;
 }
 
 export default App;

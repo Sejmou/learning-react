@@ -1,12 +1,17 @@
+import { useDispatch } from 'react-redux';
+import { authActions } from '../store';
+
 import classes from './Auth.module.css';
 
 const Auth = props => {
+  const dispatch = useDispatch();
+
   const loginHandler = event => {
     // somewhere actual authentication would need to be added
     event.preventDefault();
 
     // for now we just assume every input is correct lol
-    props.onLogin();
+    dispatch(authActions.login());
   };
 
   return (
