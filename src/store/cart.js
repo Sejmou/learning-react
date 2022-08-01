@@ -4,6 +4,7 @@ import { uiActions } from './ui';
 const initialCartState = {
   items: [],
   totalQuantity: 0,
+  localChanges: false,
 };
 
 const cartSlice = createSlice({
@@ -20,6 +21,7 @@ const cartSlice = createSlice({
         items.push({ ...item, quantity: 1 });
       }
       state.totalQuantity++;
+      state.localChanges = true;
     },
     removeItem(state, action) {
       const { items } = state;
@@ -31,12 +33,20 @@ const cartSlice = createSlice({
           state.items = items.filter(i => i.id !== itemId);
         }
         state.totalQuantity--;
+        state.localChanges = true;
       }
     },
     replace(state, action) {
-      const newCart = action.payload;
-      state.items = newCart.items || [];
-      state.totalQuantity = newCart.totalQuantity;
+      const newState = action.payload;
+      Object.keys(state).forEach(key => {
+        state[key] = newState[key];
+      });
+      if (!state.items) {
+        state.items = [];
+      }
+    },
+    markAsSynced(state) {
+      state.localChanges = false;
     },
   },
 });
@@ -107,9 +117,12 @@ export const syncCartToBackend = cart => {
     );
 
     try {
+      // on the backend, we don't need to store the localChanges prop
+      // this is ES6 syntax to extract one property of an object and put the rest into another, new object:
+      const { localChanges, ...backendCart } = cart;
       await fetch(
         'https://react-course-schwarzmueller-default-rtdb.europe-west1.firebasedatabase.app/cart.json',
-        { method: 'PUT', body: JSON.stringify(cart) }
+        { method: 'PUT', body: JSON.stringify(backendCart) }
       );
 
       dispatch(
@@ -119,6 +132,7 @@ export const syncCartToBackend = cart => {
           message: 'Stored cart data on server!',
         })
       );
+      dispatch(cartActions.markAsSynced());
     } catch (error) {
       dispatch(
         uiActions.showNotification({

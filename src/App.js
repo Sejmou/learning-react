@@ -25,15 +25,17 @@ function App() {
     dispatch(fetchCartFromBackend());
   }, [dispatch]);
 
-  // this solution for storing the current state of the cart is not ideal (implemented it myself)
-  // hopefully Max will show better solution later...
   useEffect(() => {
     if (initialRender) {
       // cart not yet fetched from the backend - we must not send this cart to the backend as it would delete the one that could be stored in the backend!
       initialRender = false;
       return;
     }
-    dispatch(syncCartToBackend(cart));
+
+    // this check is necessary to prevent this effect from triggering after data is fetched from backend
+    if (cart.localChanges) {
+      dispatch(syncCartToBackend(cart));
+    }
   }, [cart, dispatch]);
 
   return (
