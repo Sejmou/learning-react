@@ -2,5 +2,6 @@
     "editor.formatOnSave": true,
     "editor.tabSize": 2,
     "prettier.arrowParens": "avoid",
-    "prettier.singleQuote": true
+    "prettier.singleQuote": true,
+    "reactSnippets.settings.importReactOnTop": false,
 }
