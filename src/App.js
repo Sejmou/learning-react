@@ -5,8 +5,7 @@ import Cart from './components/Cart/Cart';
 import Layout from './components/Layout/Layout';
 import Products from './components/Shop/Products';
 import Notification from './components/UI/Notification';
-import { cartActions } from './store/cart';
-import { uiActions } from './store/ui';
+import { fetchCartFromBackend, syncCartToBackend } from './store/cart';
 
 let initialRender = true;
 
@@ -23,76 +22,19 @@ function App() {
   const notification = useSelector(state => state.ui.notification);
 
   useEffect(() => {
-    fetchCartFromBackend(
-      () => {
-        dispatch(
-          uiActions.showNotification({
-            status: 'pending',
-            title: 'Loading...',
-            message: 'Getting cart data from server',
-          })
-        );
-      },
-      cartData => {
-        dispatch(
-          uiActions.showNotification({
-            status: 'success',
-            title: 'Success!',
-            message: 'Fetched cart data successfully!',
-          })
-        );
-        dispatch(cartActions.set(cartData));
-      },
-      () => {
-        dispatch(
-          uiActions.showNotification({
-            status: 'error',
-            title: 'Error!',
-            message: 'Fetching cart data failed!',
-          })
-        );
-      }
-    );
+    dispatch(fetchCartFromBackend());
   }, [dispatch]);
 
+  // this solution for storing the current state of the cart is not ideal (implemented it myself)
+  // hopefully Max will show better solution later...
   useEffect(() => {
     if (initialRender) {
-      // cart still empty as it is not yet fetched from the backend - we must not send the (empty) cart to the backend!
+      // cart not yet fetched from the backend - we must not send this cart to the backend as it would delete the one that could be stored in the backend!
       initialRender = false;
       return;
     }
-
-    syncCartToBackend(
-      cart,
-      () => {
-        dispatch(
-          uiActions.showNotification({
-            status: 'pending',
-            title: 'Loading...',
-            message: 'Sending cart data to server',
-          })
-        );
-      },
-      () => {
-        dispatch(
-          uiActions.showNotification({
-            status: 'success',
-            title: 'Success!',
-            message: 'Stored cart data on server!',
-          })
-        );
-      },
-      () => {
-        dispatch(
-          uiActions.showNotification({
-            status: 'error',
-            title: 'Error!',
-            message: 'Sending cart data failed!',
-          })
-        );
-      }
-    );
-  }, [cart, dispatch]); // dispatch is actually guaranteed to never change, we just silence the IDE
+    dispatch(syncCartToBackend(cart));
+  }, [cart, dispatch]);
 
   return (
     <>
@@ -103,42 +45,6 @@ function App() {
       </Layout>
     </>
   );
-}
-
-async function fetchCartFromBackend(
-  startHandler,
-  successHandler,
-  errorHandler
-) {
-  startHandler();
-
-  try {
-    const response = await fetch(
-      'https://react-course-schwarzmueller-default-rtdb.europe-west1.firebasedatabase.app/cart.json'
-    );
-    const data = await response.json();
-    successHandler(data);
-  } catch (error) {
-    errorHandler(error);
-  }
-}
-
-async function syncCartToBackend(
-  cart,
-  startHandler,
-  successHandler,
-  errorHandler
-) {
-  startHandler();
-  try {
-    await fetch(
-      'https://react-course-schwarzmueller-default-rtdb.europe-west1.firebasedatabase.app/cart.json',
-      { method: 'PUT', body: JSON.stringify(cart) }
-    );
-    successHandler();
-  } catch (error) {
-    errorHandler();
-  }
 }
 
 export default App;

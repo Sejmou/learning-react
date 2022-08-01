@@ -13,11 +13,11 @@ const uiSlice = createSlice({
       state.showCart = !state.showCart;
     },
     showNotification(state, action) {
-      const { status, title, message } = action.payload;
+      const { status, message, title } = action.payload;
       state.notification = {
         status,
-        title,
         message,
+        title,
       };
     },
   },
