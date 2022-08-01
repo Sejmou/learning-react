@@ -17,8 +17,7 @@ function App() {
           <Route path="/products">
             <Products />
           </Route>
-          {/* The ":" is special React Router syntax for dynamic route params */}
-          <Route path="/product-details/:productId">
+          <Route path="/products/:productId">
             <ProductDetail />
           </Route>
         </div>
