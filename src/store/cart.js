@@ -32,6 +32,11 @@ const cartSlice = createSlice({
         state.totalQuantity--;
       }
     },
+    set(state, action) {
+      Object.keys(state).forEach(key => {
+        state[key] = action.payload[key];
+      });
+    },
   },
 });
 
