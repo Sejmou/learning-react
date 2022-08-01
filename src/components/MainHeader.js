@@ -1,16 +1,15 @@
+import { Link } from 'react-router-dom';
+
 const MainHeader = () => {
   return (
     <header>
       <nav>
         <ul>
-          {/* This current routing solution is bad: The page refreshes every time we change routes!
-              Luckily, React Router has a better way to solve this that will be introduced soon
-           */}
           <li>
-            <a href="/welcome">Welcome</a>
+            <Link to="/welcome">Welcome</Link>
           </li>
           <li>
-            <a href="/products">Products</a>
+            <Link to="/products">Products</Link>
           </li>
         </ul>
       </nav>
