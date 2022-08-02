@@ -1,5 +1,6 @@
 import { Link, useNavigate } from 'react-router-dom';
 // Change #11: useHistory for imperative routing was replaced by useNavigate
+// Change #12: Prompt was removed, need to figure out workaround yourself!
 
 const Products = () => {
   const navigate = useNavigate();
