@@ -1,10 +1,14 @@
-import { useRef } from 'react';
+import { useRef, useState, useEffect } from 'react';
+import { Prompt } from 'react-router-dom';
 
 import Card from '../UI/Card';
 import LoadingSpinner from '../UI/LoadingSpinner';
 import classes from './QuoteForm.module.css';
 
-const QuoteForm = (props) => {
+const QuoteForm = props => {
+  const [formEdited, setFormEdited] = useState(false);
+  const [submittedFormValue, setSubmittedFormValue] = useState(null);
+
   const authorInputRef = useRef();
   const textInputRef = useRef();
 
@@ -16,31 +20,53 @@ const QuoteForm = (props) => {
 
     // optional: Could validate here
 
-    props.onAddQuote({ author: enteredAuthor, text: enteredText });
+    setSubmittedFormValue({ author: enteredAuthor, text: enteredText });
   }
 
-  return (
-    <Card>
-      <form className={classes.form} onSubmit={submitFormHandler}>
-        {props.isLoading && (
-          <div className={classes.loading}>
-            <LoadingSpinner />
-          </div>
-        )}
+  useEffect(() => {
+    if (submittedFormValue) {
+      props.onAddQuote(submittedFormValue);
+    }
+  }, [submittedFormValue, props]);
 
-        <div className={classes.control}>
-          <label htmlFor='author'>Author</label>
-          <input type='text' id='author' ref={authorInputRef} />
-        </div>
-        <div className={classes.control}>
-          <label htmlFor='text'>Text</label>
-          <textarea id='text' rows='5' ref={textInputRef}></textarea>
-        </div>
-        <div className={classes.actions}>
-          <button className='btn'>Add Quote</button>
-        </div>
-      </form>
-    </Card>
+  const formChangeHandler = () => {
+    setFormEdited(true);
+  };
+
+  return (
+    <>
+      <Prompt
+        when={formEdited && !submittedFormValue}
+        message={location =>
+          'Are your sure you want to leave? All your entered data will be lost!'
+        }
+      />
+      <Card>
+        <form
+          onChange={formChangeHandler}
+          className={classes.form}
+          onSubmit={submitFormHandler}
+        >
+          {props.isLoading && (
+            <div className={classes.loading}>
+              <LoadingSpinner />
+            </div>
+          )}
+
+          <div className={classes.control}>
+            <label htmlFor="author">Author</label>
+            <input type="text" id="author" ref={authorInputRef} />
+          </div>
+          <div className={classes.control}>
+            <label htmlFor="text">Text</label>
+            <textarea id="text" rows="5" ref={textInputRef}></textarea>
+          </div>
+          <div className={classes.actions}>
+            <button className="btn">Add Quote</button>
+          </div>
+        </form>
+      </Card>
+    </>
   );
 };
 
