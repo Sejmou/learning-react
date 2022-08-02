@@ -8,12 +8,23 @@ const MainHeader = () => {
       <nav>
         <ul>
           <li>
-            <NavLink activeClassName={classes.active} to="/welcome">
+            {/* Change #5: activeClassName prop on NavLinks is gone!
+                Instead, we can pass a function accepting information about the link as an argument to className to apply classes as needed */}
+            <NavLink
+              className={linkData => {
+                console.log('data for "Welcome" link', linkData);
+                return linkData.isActive ? classes.active : '';
+              }}
+              to="/welcome"
+            >
               Welcome
             </NavLink>
           </li>
           <li>
-            <NavLink activeClassName={classes.active} to="/products">
+            <NavLink
+              className={linkData => (linkData.isActive ? classes.active : '')}
+              to="/products"
+            >
               Products
             </NavLink>
           </li>
