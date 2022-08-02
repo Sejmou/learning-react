@@ -18,6 +18,10 @@ const Products = () => {
       <button onClick={clickHandler} className="btn">
         Pointless button (will redirect after 2 seconds)
       </button>
+      {/* Very cool: provide negative number n to go back n steps in navigation history!  */}
+      <button onClick={() => navigate(-1)} className="btn">
+        Back to previous page
+      </button>
       <ul>
         <li>
           <Link to="/products/1">Product 1</Link>
