@@ -27,7 +27,7 @@ const QuoteForm = props => {
     if (submittedFormValue) {
       props.onAddQuote(submittedFormValue);
     }
-  }, [submittedFormValue, props]);
+  }, [submittedFormValue]); // linter complains bc of props.onAddQuote but the suggested fix does not work lol - code works fine w/o adding dep
 
   const formChangeHandler = () => {
     setFormEdited(true);
