@@ -41,8 +41,6 @@ const QuoteDetail = () => {
     return <p>No quote found!</p>;
   }
 
-  console.log('loaded quote', loadedQuote);
-
   return (
     <>
       <HighlightedQuote text={loadedQuote.text} author={loadedQuote.author} />
