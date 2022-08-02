@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useCallback } from 'react';
 import { useHistory } from 'react-router-dom';
 
 import QuoteForm from '../components/quotes/QuoteForm';
@@ -9,9 +9,12 @@ const NewQuote = () => {
   const { sendRequest, status } = useHttp(addQuote);
   const history = useHistory();
 
-  const addQuoteHandler = quoteData => {
-    sendRequest(quoteData);
-  };
+  const addQuoteHandler = useCallback(
+    quoteData => {
+      sendRequest(quoteData);
+    },
+    [sendRequest]
+  );
 
   useEffect(() => {
     if (status === 'completed') {

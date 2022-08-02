@@ -23,11 +23,12 @@ const QuoteForm = props => {
     setSubmittedFormValue({ author: enteredAuthor, text: enteredText });
   }
 
+  const { onAddQuote } = props;
   useEffect(() => {
     if (submittedFormValue) {
-      props.onAddQuote(submittedFormValue);
+      onAddQuote(submittedFormValue);
     }
-  }, [submittedFormValue]); // linter complains bc of props.onAddQuote but the suggested fix does not work lol - code works fine w/o adding dep
+  }, [submittedFormValue, onAddQuote]);
 
   const formChangeHandler = () => {
     setFormEdited(true);
