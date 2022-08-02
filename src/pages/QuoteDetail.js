@@ -1,61 +1,47 @@
-import { useEffect } from 'react';
-import { Route, Link, useRouteMatch } from 'react-router-dom';
+import { Fragment, useEffect } from 'react';
+import { useParams, Outlet } from 'react-router-dom';
 
-import Comments from '../components/comments/Comments';
 import HighlightedQuote from '../components/quotes/HighlightedQuote';
-import LoadingSpinner from '../components/UI/LoadingSpinner';
 import useHttp from '../hooks/use-http';
 import { getSingleQuote } from '../lib/api';
+import LoadingSpinner from '../components/UI/LoadingSpinner';
 
 const QuoteDetail = () => {
-  const match = useRouteMatch();
-  const quoteId = match.params.quoteId;
+  const params = useParams();
 
-  const {
-    status,
-    sendRequest,
-    error,
-    data: loadedQuote,
-  } = useHttp(getSingleQuote, true);
+  const { quoteId } = params;
+
+  const { sendRequest, status, data: loadedQuote, error } = useHttp(
+    getSingleQuote,
+    true
+  );
+
   useEffect(() => {
     sendRequest(quoteId);
   }, [sendRequest, quoteId]);
 
-  const quotePath = match.path;
-  const commentsPath = `${quotePath}/comments`;
-  const commentsURL = `${match.url}/comments`;
-
   if (status === 'pending') {
     return (
-      <div className="centered">
+      <div className='centered'>
         <LoadingSpinner />
       </div>
     );
   }
 
   if (error) {
-    return <p className="centered focused">{error}</p>;
+    return <p className='centered'>{error}</p>;
   }
 
-  if (status === 'completed' && !loadedQuote) {
+  if (!loadedQuote.text) {
     return <p>No quote found!</p>;
   }
 
   return (
-    <>
+    <Fragment>
       <HighlightedQuote text={loadedQuote.text} author={loadedQuote.author} />
-      <Route path={quotePath} exact>
-        <div className="centered">
-          <Link className="btn--flat" to={commentsURL}>
-            Load Comments
-          </Link>
-        </div>
-      </Route>
-
-      <Route path={commentsPath}>
-        <Comments />
-      </Route>
-    </>
+      <Outlet />
+    </Fragment>
   );
 };
+
 export default QuoteDetail;

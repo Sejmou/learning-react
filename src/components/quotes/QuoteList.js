@@ -1,24 +1,36 @@
 import { Fragment } from 'react';
-import { useHistory, useLocation } from 'react-router-dom';
+import { useNavigate, useLocation, createSearchParams } from 'react-router-dom';
 
 import QuoteItem from './QuoteItem';
 import classes from './QuoteList.module.css';
 
+const sortQuotes = (quotes, ascending) => {
+  return quotes.sort((quoteA, quoteB) => {
+    if (ascending) {
+      return quoteA.id > quoteB.id ? 1 : -1;
+    } else {
+      return quoteA.id < quoteB.id ? 1 : -1;
+    }
+  });
+};
+
 const QuoteList = props => {
-  const history = useHistory();
+  const navigate = useNavigate();
   const location = useLocation();
-  const queryParams = new URLSearchParams(location.search); // makes queryParams accesible via get()
+
+  const queryParams = new URLSearchParams(location.search);
 
   const isSortingAscending = queryParams.get('sort') === 'asc';
 
+  const sortedQuotes = sortQuotes(props.quotes, isSortingAscending);
+
   const changeSortingHandler = () => {
-    history.push({
+    navigate({
       pathname: location.pathname,
-      search: `?sort=${isSortingAscending ? 'desc' : 'asc'}`,
+      search:
+        '?' + createSearchParams({ sort: isSortingAscending ? 'desc' : 'asc' }),
     });
   };
-
-  const sortedQuotes = sortQuotes(props.quotes, isSortingAscending);
 
   return (
     <Fragment>
@@ -40,12 +52,5 @@ const QuoteList = props => {
     </Fragment>
   );
 };
-
-function sortQuotes(quotes, ascending) {
-  // using spread syntax to make sure copy of original array is sorted (not essential here)
-  return [...quotes].sort((a, b) =>
-    ascending ? (a.id > b.id ? 1 : -1) : a.id < b.id ? 1 : -1
-  );
-}
 
 export default QuoteList;
