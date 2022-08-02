@@ -31,6 +31,10 @@ export async function getSingleQuote(quoteId) {
     throw new Error(data.message || 'Could not fetch quote.');
   }
 
+  if (!data) {
+    return null;
+  }
+
   const loadedQuote = {
     id: quoteId,
     ...data,
