@@ -1,30 +1,69 @@
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 
 import classes from './AuthForm.module.css';
 
 const AuthForm = () => {
+  const emailInputRef = useRef();
+  const passwordInputRef = useRef();
   const [isLogin, setIsLogin] = useState(true);
 
   const switchAuthModeHandler = () => {
-    setIsLogin((prevState) => !prevState);
+    setIsLogin(prevState => !prevState);
+  };
+
+  const submitHandler = event => {
+    event.preventDefault();
+
+    const email = emailInputRef.current.value;
+    const password = passwordInputRef.current.value;
+
+    // optional validation
+
+    if (isLogin) {
+    } else {
+      // register
+      fetch(
+        'https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=AIzaSyAKM7ZT4GWGBg8FNWOaeJyJVtggCpY3o0k',
+        {
+          method: 'POST',
+          body: JSON.stringify({ email, password, returnSecureToken: true }),
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        }
+      ).then(res => {
+        if (res.ok) {
+        } else {
+          res.json().then(data => {
+            console.log(data);
+            // could/should show error message in UI
+          });
+        }
+      });
+    }
   };
 
   return (
     <section className={classes.auth}>
       <h1>{isLogin ? 'Login' : 'Sign Up'}</h1>
-      <form>
+      <form onSubmit={submitHandler}>
         <div className={classes.control}>
-          <label htmlFor='email'>Your Email</label>
-          <input type='email' id='email' required />
+          <label htmlFor="email">Your Email</label>
+          <input ref={emailInputRef} type="email" id="email" required />
         </div>
         <div className={classes.control}>
-          <label htmlFor='password'>Your Password</label>
-          <input type='password' id='password' required />
+          <label htmlFor="password">Your Password</label>
+          <input
+            ref={passwordInputRef}
+            type="password"
+            id="password"
+            required
+          />
         </div>
         <div className={classes.actions}>
           <button>{isLogin ? 'Login' : 'Create Account'}</button>
           <button
-            type='button'
+            type="button"
             className={classes.toggle}
             onClick={switchAuthModeHandler}
           >
