@@ -13,9 +13,6 @@ function App() {
   return (
     <Layout>
       <Switch>
-        <Route path="/auth">
-          <AuthPage />
-        </Route>
         {isLoggedIn ? (
           <>
             <Route path="/" exact>
@@ -24,11 +21,19 @@ function App() {
             <Route path="/profile">
               <UserProfile />
             </Route>
+            <Route path="*">
+              <Redirect to="/" />
+            </Route>
           </>
         ) : (
-          <Route path="*">
-            <Redirect to="/auth" />
-          </Route>
+          <>
+            <Route path="/auth">
+              <AuthPage />
+            </Route>
+            <Route path="*">
+              <Redirect to="/auth" />
+            </Route>
+          </>
         )}
       </Switch>
     </Layout>
