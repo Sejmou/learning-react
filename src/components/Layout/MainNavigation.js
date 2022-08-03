@@ -5,7 +5,10 @@ import classes from './MainNavigation.module.css';
 import AuthContext from '../../store/auth-context';
 
 const MainNavigation = () => {
-  const { isLoggedIn } = useContext(AuthContext);
+  const { isLoggedIn, logout } = useContext(AuthContext);
+  const logoutHandler = () => {
+    logout();
+  };
 
   return (
     <header className={classes.header}>
@@ -26,7 +29,7 @@ const MainNavigation = () => {
           )}
           {isLoggedIn && (
             <li>
-              <button>Logout</button>
+              <button onClick={logoutHandler}>Logout</button>
             </li>
           )}
         </ul>
