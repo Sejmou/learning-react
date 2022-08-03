@@ -1,6 +1,7 @@
 import { useState, useRef } from 'react';
 
 import classes from './AuthForm.module.css';
+const apiKey = 'AIzaSyAKM7ZT4GWGBg8FNWOaeJyJVtggCpY3o0k';
 
 const AuthForm = () => {
   const emailInputRef = useRef();
@@ -21,30 +22,36 @@ const AuthForm = () => {
     // optional validation
 
     setIsLoading(true);
-    if (isLogin) {
-    } else {
-      // register
-      fetch(
-        'https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=AIzaSyAKM7ZT4GWGBg8FNWOaeJyJVtggCpY3o0k',
-        {
-          method: 'POST',
-          body: JSON.stringify({ email, password, returnSecureToken: true }),
-          headers: {
-            'Content-Type': 'application/json',
-          },
-        }
-      ).then(res => {
+
+    const url = isLogin
+      ? 'https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key='
+      : 'https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=';
+
+    fetch(url + apiKey, {
+      method: 'POST',
+      body: JSON.stringify({ email, password, returnSecureToken: true }),
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    })
+      .then(res => {
         setIsLoading(false);
         if (res.ok) {
+          return res.json();
         } else {
-          res.json().then(data => {
+          return res.json().then(data => {
             // in practice we would need smarter logic, of course
             const errorMessage = data?.error?.message || 'Something went wrong';
-            alert(errorMessage);
+            throw new Error(errorMessage);
           });
         }
+      })
+      .then(data => {
+        console.log(data);
+      })
+      .catch(err => {
+        alert(err.message);
       });
-    }
   };
 
   return (
