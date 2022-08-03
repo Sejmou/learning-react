@@ -51,7 +51,6 @@ const AuthForm = () => {
         }
       })
       .then(data => {
-        console.log(ctx);
         ctx.login(data.idToken);
       })
       .catch(err => {
