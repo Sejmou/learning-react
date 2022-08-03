@@ -6,6 +6,7 @@ const AuthForm = () => {
   const emailInputRef = useRef();
   const passwordInputRef = useRef();
   const [isLogin, setIsLogin] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
 
   const switchAuthModeHandler = () => {
     setIsLogin(prevState => !prevState);
@@ -19,6 +20,7 @@ const AuthForm = () => {
 
     // optional validation
 
+    setIsLoading(true);
     if (isLogin) {
     } else {
       // register
@@ -32,11 +34,13 @@ const AuthForm = () => {
           },
         }
       ).then(res => {
+        setIsLoading(false);
         if (res.ok) {
         } else {
           res.json().then(data => {
-            console.log(data);
-            // could/should show error message in UI
+            // in practice we would need smarter logic, of course
+            const errorMessage = data?.error?.message || 'Something went wrong';
+            alert(errorMessage);
           });
         }
       });
@@ -46,6 +50,7 @@ const AuthForm = () => {
   return (
     <section className={classes.auth}>
       <h1>{isLogin ? 'Login' : 'Sign Up'}</h1>
+      {isLoading && <p>Sending request...</p>}
       <form onSubmit={submitHandler}>
         <div className={classes.control}>
           <label htmlFor="email">Your Email</label>
