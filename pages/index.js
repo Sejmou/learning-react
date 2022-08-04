@@ -1,5 +1,4 @@
-// note: this import will NOT be added to the client bundle
-//Next.js checks the usage of imports and only adds to client bundle if they are actually used in client code as well
+import Head from 'next/head';
 import { MongoClient } from 'mongodb';
 
 import MeetupList from '../components/meetups/MeetupList';
@@ -7,7 +6,18 @@ import MeetupList from '../components/meetups/MeetupList';
 const HomePage = props => {
   const { meetups } = props;
 
-  return <MeetupList meetups={meetups} />;
+  return (
+    <>
+      <Head>
+        <title>React Meetups</title>
+        <meta
+          name="description"
+          content="Browse a huge list of highly active React meetups"
+        />
+      </Head>
+      <MeetupList meetups={meetups} />
+    </>
+  );
 };
 
 export async function getStaticProps() {
