@@ -1,23 +1,8 @@
-import MeetupList from '../components/meetups/MeetupList';
+// note: this import will NOT be added to the client bundle
+//Next.js checks the usage of imports and only adds to client bundle if they are actually used in client code as well
+import { MongoClient } from 'mongodb';
 
-const DUMMY_MEETUPS = [
-  {
-    id: 'm1',
-    title: 'A First Meetup',
-    image:
-      'https://upload.wikimedia.org/wikipedia/commons/thumb/d/d3/Stadtbild_M%C3%BCnchen.jpg/1280px-Stadtbild_M%C3%BCnchen.jpg',
-    address: 'Some address 5, 12345 Some City',
-    description: 'This is a first meetup!',
-  },
-  {
-    id: 'm2',
-    title: 'A Second Meetup',
-    image:
-      'https://upload.wikimedia.org/wikipedia/commons/thumb/d/d3/Stadtbild_M%C3%BCnchen.jpg/1280px-Stadtbild_M%C3%BCnchen.jpg',
-    address: 'Some address 10, 12345 Some City',
-    description: 'This is a second meetup!',
-  },
-];
+import MeetupList from '../components/meetups/MeetupList';
 
 const HomePage = props => {
   const { meetups } = props;
@@ -25,25 +10,23 @@ const HomePage = props => {
   return <MeetupList meetups={meetups} />;
 };
 
-// getServerSideProps is an alternative to getStaticProps
-// the difference is that we use Server-Side-Rendering (SSR) instead of Static Site Generation (SSG)
-// for every incoming request, the server gets the current data (fetched and returned inside this function) and forwards it to the page component as props
-// export async function getServerSideProps(context) {
-//   // we also have access to request context (don't know what exactly that means at this point, Node.js developers might know more about that already)
-//   // const req = context.req;
-//   // const res = context.res;
-
-//   return {
-//     props: { meetups: DUMMY_MEETUPS },
-//   };
-// }
-
-// for this particular type of page (not-so-frequent updates), getStaticProps is actually probably the smarter choice
-// we can make use of caching and CDNs for serving truely static sites, which makes requests much faster
 export async function getStaticProps() {
+  const client = await MongoClient.connect(
+    'mongodb+srv://Sejmou:tryingmongowithnextjs@cluster0.bah7j.mongodb.net/meetup-app?retryWrites=true&w=majority'
+  );
+  const db = client.db();
+  const meetupsCollection = db.collection('meetups');
+  const meetups = (await meetupsCollection.find().toArray()).map(meetup => {
+    const { _id, ...data } = meetup;
+    return {
+      ...data,
+      id: _id.toString(),
+    };
+  });
+
   return {
     props: {
-      meetups: DUMMY_MEETUPS,
+      meetups,
     },
     revalidate: 60,
   };

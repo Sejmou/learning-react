@@ -27,28 +27,33 @@ export default async function handler(req, res) {
 
     // remember: this code runs on the server only!
     // this is important as we NEVER should expose backend DB credentials on the frontend
-    const client = await MongoClient.connect(
-      'mongodb+srv://Sejmou:tryingmongowithnextjs@cluster0.bah7j.mongodb.net/meetup-app?retryWrites=true&w=majority'
-    );
-    const db = client.db();
-    const meetupsCollection = db.collection('meetups');
-
     try {
-      const result = await meetupsCollection.insertOne({
-        title,
-        image,
-        address,
-        description,
-      });
-      console.log('DB result obj', result);
+      const client = await MongoClient.connect(
+        'mongodb+srv://Sejmou:tryingmongowithnextjs@cluster0.bah7j.mongodb.net/meetup-app?retryWrites=true&w=majority'
+      );
+      const db = client.db();
+      const meetupsCollection = db.collection('meetups');
 
-      // 201 Status Code === "Created"
-      return res.status(201).json({ id: result.insertedId });
+      try {
+        const result = await meetupsCollection.insertOne({
+          title,
+          image,
+          address,
+          description,
+        });
+        console.log('DB result obj', result);
+
+        // 201 Status Code === "Created"
+        return res.status(201).json({ id: result.insertedId });
+      } catch (error) {
+        console.log('An error occurred while accessing the database', error);
+        return res.status(500).end();
+      } finally {
+        client.close();
+      }
     } catch (error) {
-      console.log('An error occurred', error);
+      console.log('An error occurred while connecting to database', error);
       return res.status(500).end();
-    } finally {
-      client.close();
     }
   }
 
