@@ -40,7 +40,7 @@ export default async function handler(req, res) {
         address,
         description,
       });
-      console.log(result);
+      console.log('DB result obj', result);
 
       // 201 Status Code === "Created"
       return res.status(201).json({ id: result.insertedId });
