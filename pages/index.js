@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'react';
 import MeetupList from '../components/meetups/MeetupList';
 
 const DUMMY_MEETUPS = [
@@ -20,6 +21,16 @@ const DUMMY_MEETUPS = [
 ];
 
 const HomePage = () => {
-  return <MeetupList meetups={DUMMY_MEETUPS} />;
+  const [loadedMeetups, setLoadedMeetups] = useState([]);
+
+  useEffect(() => {
+    // this basically emulates fetching data via HTTP
+    // loadedMeetups is initially an empty array and then gets filled with the "fetched" DUMMY_MEETUPS
+    // with this approach, the page source of the initially loaded page does NOT contain the meetups
+    // data is added only once the client loads the page -> bad for SEO
+    setLoadedMeetups(DUMMY_MEETUPS);
+  }, []);
+
+  return <MeetupList meetups={loadedMeetups} />;
 };
 export default HomePage;
