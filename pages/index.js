@@ -43,6 +43,10 @@ export async function getStaticProps() {
     props: {
       meetups: DUMMY_MEETUPS,
     },
+    // use revalidate to unlock Incremental Static Site Generation
+    // -> generate new static page if page is requested after given number of seconds!
+    // this way we can guarantee that data of the pre-rendered static site is never older than the given number of seconds
+    revalidate: 60,
   };
 }
 
