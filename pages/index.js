@@ -21,31 +21,31 @@ const DUMMY_MEETUPS = [
 ];
 
 const HomePage = props => {
-  const { meetups } = props; // the meetups prop is a static prop returned by getStaticProps!
-  // if we inspect the initial page source, we notice that our DUMMY_MEETUPS are contained in it
-  // this means that the server already returned the data and it was NOT added on the client-side
+  const { meetups } = props;
 
   return <MeetupList meetups={meetups} />;
 };
 
-// this function allows us to work around problem outlined in previous lesson: pre-loading sites with data
-// if our data does not change that often, we can  fetch it as part of the build process by exporting this function
-// inside that (async) function, we can fetch the data and return it as "static props"
-// during the build process, Next.js will wait for the Promise created by this function to resolve
-// then, a static page using those static props will be created which is initially served to clients requesting data from this page!
-// this function is executed on the server, NOT on the client!
-// Advantage of this approach: SEO works perfectly as the data is in the initial page source as well and not fetched by the client!
-// Disadvantage: need to rebuild whole app to get updated static props -> if that is a problem and we still need SEO, SSR is an alternative (explained later)
+// getServerSideProps is an alternative to getStaticProps
+// the difference is that we use Server-Side-Rendering (SSR) instead of Static Site Generation (SSG)
+// for every incoming request, the server gets the current data (fetched and returned inside this function) and forwards it to the page component as props
+// export async function getServerSideProps(context) {
+//   // we also have access to request context (don't know what exactly that means at this point, Node.js developers might know more about that already)
+//   // const req = context.req;
+//   // const res = context.res;
+
+//   return {
+//     props: { meetups: DUMMY_MEETUPS },
+//   };
+// }
+
+// for this particular type of page (not-so-frequent updates), getStaticProps is actually probably the smarter choice
+// we can make use of caching and CDNs for serving truely static sites, which makes requests much faster
 export async function getStaticProps() {
-  // in realistic scenarios, you would probably await an HTTP response here
-  // once done, return an object with props property that contains the static props you want to use on the page
   return {
     props: {
       meetups: DUMMY_MEETUPS,
     },
-    // use revalidate to unlock Incremental Static Site Generation
-    // -> generate new static page if page is requested after given number of seconds!
-    // this way we can guarantee that data of the pre-rendered static site is never older than the given number of seconds
     revalidate: 60,
   };
 }
