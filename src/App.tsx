@@ -1,7 +1,14 @@
 import Todos from './components/Todos';
+import Todo from './models/todo';
 
 function App() {
-  return <Todos todos={['Learn React', 'Learn Next.js', 'Learn everything']} />;
+  const todos = [
+    new Todo('Learn React'),
+    new Todo('Learn Next.js'),
+    new Todo('Learn everything'),
+  ];
+
+  return <Todos todos={todos} />;
 }
 
 export default App;
