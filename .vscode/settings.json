@@ -4,4 +4,5 @@
     "prettier.arrowParens": "avoid",
     "prettier.singleQuote": true,
     "reactSnippets.settings.importReactOnTop": false,
+    "typescript.tsdk": "node_modules/typescript/lib",
 }
