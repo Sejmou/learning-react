@@ -41,6 +41,12 @@ class App extends Component {
           timeout={animationDuration}
           mountOnEnter
           unmountOnExit
+          onEnter={() => console.log('onEnter')}
+          onEntering={() => console.log('onEntering')}
+          onEntered={() => console.log('onEntered')}
+          onExit={() => console.log('onExit')}
+          onExiting={() => console.log('onExiting')}
+          onExited={() => console.log('onExited')}
         >
           {state => (
             <>
