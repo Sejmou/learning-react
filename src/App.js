@@ -6,6 +6,8 @@ import Modal from './components/Modal/Modal';
 import Backdrop from './components/Backdrop/Backdrop';
 import List from './components/List/List';
 
+const transitionDuration = 1000;
+
 class App extends Component {
   state = {
     modalIsOpen: false,
@@ -35,10 +37,16 @@ class App extends Component {
           }}
         >
           <h3>Simple react-transition-group demo</h3>
-          <Transition in={this.state.showDemoBlock} timeout={1000}>
-            {state => <p>Current transition state: {state}</p>}
+          <p>Click 'Toggle Block' button and observe the changes!</p>
+          <p>showDemoBlock: {`${this.state.showDemoBlock}`}</p>
+          <Transition
+            in={this.state.showDemoBlock}
+            timeout={transitionDuration}
+            mountOnEnter
+            unmountOnExit
+          >
+            {state => <p>transition state: {state}</p>}
           </Transition>
-          <p>Click the button below and observe the change!</p>
           <div
             style={{
               display: 'flex',
@@ -48,11 +56,24 @@ class App extends Component {
               height: 100,
             }}
           >
-            {this.state.showDemoBlock && (
-              <div
-                style={{ backgroundColor: 'red', width: 100, height: 100 }}
-              ></div>
-            )}
+            <Transition
+              in={this.state.showDemoBlock}
+              timeout={transitionDuration}
+              mountOnEnter
+              unmountOnExit
+            >
+              {state => (
+                <div
+                  style={{
+                    backgroundColor: 'red',
+                    width: 100,
+                    height: 100,
+                    transition: `opacity ${transitionDuration / 1000}s`,
+                    opacity: state === 'entered' ? 1 : 0,
+                  }}
+                ></div>
+              )}
+            </Transition>
             <div style={{ flex: 1 }}></div>
             <div>
               <button className="Button" onClick={this.toggleBlock}>
