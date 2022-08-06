@@ -35,7 +35,7 @@ class App extends Component {
           }}
         >
           <h3>Simple react-transition-group demo</h3>
-          <Transition in={this.state.showDemoBlock}>
+          <Transition in={this.state.showDemoBlock} timeout={1000}>
             {state => <p>Current transition state: {state}</p>}
           </Transition>
           <p>Click the button below and observe the change!</p>
