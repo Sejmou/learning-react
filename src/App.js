@@ -6,6 +6,12 @@ import Modal from './components/Modal/Modal';
 import Backdrop from './components/Backdrop/Backdrop';
 import List from './components/List/List';
 
+// Transition also accepts an object as input for the timeout prop
+const animationDuration = {
+  enter: 400,
+  exit: 1000,
+};
+
 class App extends Component {
   state = {
     modalIsOpen: false,
@@ -28,9 +34,11 @@ class App extends Component {
     return (
       <div className="App">
         <h1>React Animations</h1>
+        {/* Note: could also move Transition component inside a "Modal+Backdrop wrapper" component
+            to automatically reuse the same animation anywhere the modal is used */}
         <Transition
           in={this.state.modalIsOpen}
-          timeout={400}
+          timeout={animationDuration}
           mountOnEnter
           unmountOnExit
         >
